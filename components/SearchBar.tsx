@@ -1,13 +1,13 @@
-import {Image, View, Text, TextInput } from 'react-native'
-import React from 'react'
+import React from 'react';
+import { Image, TextInput, View } from 'react-native';
 import { icons } from '../assets';
 
 interface Props{
     placeholder:string;
-    onPress?:()=> void;
+    onFocus?:()=> void;
 }
 
-const SearchBar = ({placeholder, onPress}:Props) => {
+const SearchBar = ({placeholder, onFocus}:Props) => {
   return (
     <View className='flex-row items-center bg-dark-200 rounded-full px-5 py-4'>
       <Image 
@@ -17,11 +17,11 @@ const SearchBar = ({placeholder, onPress}:Props) => {
         tintColor="#ab8bff"
       />
       <TextInput
-        onPress={onPress}
+        onFocus={onFocus}
         placeholder={placeholder}
         value=''
         onChangeText={()=>{}}
-        placeholderTextColor="a8b5db"
+        placeholderTextColor="#ffffff"
         className='flex-1 ml-2 text-white'
       />
     </View>

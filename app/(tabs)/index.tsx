@@ -1,9 +1,10 @@
-import { ActivityIndicator, Image, ScrollView, View , Text, FlatList } from "react-native";
-import { icons, images } from "../../assets";
 import SearchBar from "@/components/SearchBar";
-import { useRouter } from "expo-router";
-import useFetch from "@/services/useFetch";
 import { fetchMovies } from "@/services/api";
+import useFetch from "@/services/useFetch";
+import { useRouter } from "expo-router";
+import { ActivityIndicator, FlatList, Image, ScrollView, Text, View } from "react-native";
+import { icons, images } from "../../assets";
+import MovieCart from "@/components/MovieCart";
 
 export default function Index() {
   const router = useRouter();
@@ -48,7 +49,7 @@ export default function Index() {
            ):(
              <View className="flex-1 mt-5">
              <SearchBar
-              onPress={()=> router.push('/(tabs)/search')}
+              onFocus={()=> router.push('/(tabs)/search')}
               placeholder="Search for a movie"
              />
              <>
@@ -59,8 +60,20 @@ export default function Index() {
               <FlatList
                 data={movies}
                 renderItem={({item})=>(
-                  <Text className="text-white text-sm">{item.title}</Text>
+                  <MovieCart
+                      {...item}
+                  />
                 )}  
+                keyExtractor={(item) => item.imdbID}
+                numColumns={3}
+                columnWrapperStyle={{
+                      justifyContent:'flex-start',
+                      gap:20,
+                      paddingRight:5,
+                      marginBottom:10
+                }}
+                className="mt-2 pb-32"
+                scrollEnabled={false}
               />
               </>
           </View>
