@@ -1,5 +1,3 @@
-import { Movie } from "@/interfaces/interfaces";
-
 export const OMDB_CONFIG = {
   BASE_URL: 'http://www.omdbapi.com/',
   API_KEY: process.env.EXPO_PUBLIC_MOVIE_API_KEY,
