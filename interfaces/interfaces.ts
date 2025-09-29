@@ -6,6 +6,7 @@ interface Movie {
   Poster: string;  
 }
 
+
 interface TrendingMovie {
   searchTerm: string;
   movie_id: number;
@@ -66,3 +67,6 @@ interface TrendingCardProps {
   movie: TrendingMovie;
   index: number;
 }
+
+
+export {Movie,TrendingMovie,MovieDetails, TrendingCardProps}

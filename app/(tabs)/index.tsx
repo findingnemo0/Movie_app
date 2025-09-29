@@ -58,10 +58,10 @@ export default function Index() {
               </Text>
               
               <FlatList
-                data={movies}
+                data={movies || []}
                 renderItem={({item})=>(
                   <MovieCart
-                      {...item}
+                      movie={item}
                   />
                 )}  
                 keyExtractor={(item) => item.imdbID}

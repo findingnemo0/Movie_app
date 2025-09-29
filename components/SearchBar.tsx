@@ -5,9 +5,11 @@ import { icons } from '../assets';
 interface Props{
     placeholder:string;
     onFocus?:()=> void;
+    value?:string;
+    onChangeText?:(text:string)=>void;
 }
 
-const SearchBar = ({placeholder, onFocus}:Props) => {
+const SearchBar = ({placeholder, onFocus, value, onChangeText}:Props) => {
   return (
     <View className='flex-row items-center bg-dark-200 rounded-full px-5 py-4'>
       <Image 
@@ -19,10 +21,12 @@ const SearchBar = ({placeholder, onFocus}:Props) => {
       <TextInput
         onFocus={onFocus}
         placeholder={placeholder}
-        value=''
-        onChangeText={()=>{}}
+        value={value}
+        onChangeText={onChangeText}
         placeholderTextColor="#ffffff"
         className='flex-1 ml-2 text-white'
+        autoCapitalize='none'
+        returnKeyType='search'
       />
     </View>
   )

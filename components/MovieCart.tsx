@@ -1,16 +1,21 @@
 import { Image, View, Text, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { Link } from 'expo-router'
+import {Movie} from '../interfaces/interfaces'
 
-const MovieCart = ({imdbID,Poster, Title , Type, Year}:Movie) => {
-    console.log(Poster);
+interface MovieCartProps{
+  movie:Movie;
+}
+
+const MovieCart = ({movie}:MovieCartProps) => {
+  if(!movie) return null;
   return (
-    <Link href={`/movies/${imdbID}`} asChild>
+    <Link href={`/movies/${movie.imdbID}`} asChild>
         <TouchableOpacity className='w-[30%]'>
             <Image 
                 source={{
-                   uri: Poster !== "N/A" 
-                   ? Poster 
+                   uri: movie.Poster !== "N/A" 
+                   ? movie.Poster 
                    : "https://via.placeholder.com/300x450/1a1a1a/ffffff.png",
           }}
                 className='w-full h-52 rounded-lg'
@@ -19,11 +24,11 @@ const MovieCart = ({imdbID,Poster, Title , Type, Year}:Movie) => {
                 <Text 
                     className='text-sm font-bold text-white mt-2' 
                     numberOfLines={1}>
-                    {Title}
+                    {movie.Title}
                 </Text>
                 <View className='flex flex-row justify-between'>
-                     <Text className="text-xs text-gray-400">{Type}</Text>
-                     <Text className="text-xs text-gray-400">{Year}</Text>
+                     <Text className="text-xs text-gray-400">{movie.Type}</Text>
+                     <Text className="text-xs text-gray-400">{movie.Year}</Text>
                 </View>
 
         </TouchableOpacity>

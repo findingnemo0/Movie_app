@@ -1,3 +1,5 @@
+import { Movie } from "@/interfaces/interfaces";
+
 export const OMDB_CONFIG = {
   BASE_URL: 'http://www.omdbapi.com/',
   API_KEY: process.env.EXPO_PUBLIC_MOVIE_API_KEY,
@@ -23,5 +25,5 @@ export const fetchMovies = async ({ query }: { query: string }) => {
 
   const data = await response.json();
 
-  return data.Search || []; // OMDb returns results in 'Search' array
+  return Array.isArray(data.Search) ? data.Search : [];  // OMDb returns results in 'Search' array
 };
