@@ -72,9 +72,10 @@ export default function Index() {
                     ItemSeparatorComponent={()=><View className="w-4"/>}
                     className="mb-4 mt-3"
                     data={trendingMovies}
-                    renderItem={({ item , index }) => (
+                    renderItem={({ item , index , Title }) => (
                       <TrendingCard  
                         movie={item}
+                        Title={Title}
                         index={index}
                       />
                     )}

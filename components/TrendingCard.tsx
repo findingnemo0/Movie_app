@@ -1,9 +1,9 @@
-import { Image, View, Text, TouchableOpacity } from 'react-native'
-import React from 'react'
-import { Link } from 'expo-router'
-import { TrendingCardProps } from '@/interfaces/interfaces'
+import { images } from '@/assets';
+import { TrendingCardProps } from '@/interfaces/interfaces';
 import MaskedView from '@react-native-masked-view/masked-view';
-import { images } from '@/assets'
+import { Link } from 'expo-router';
+import React from 'react';
+import { Image, Text, TouchableOpacity, View } from 'react-native';
 
 const TrendingCard = ({movie:{movie_id, Title , Poster},index }:TrendingCardProps) => {
   return (
@@ -16,11 +16,11 @@ const TrendingCard = ({movie:{movie_id, Title , Poster},index }:TrendingCardProp
                 />
 
                 <View
-                    className='absolute bottom-9 -left-3.5 px-2 py-1 rounded-full '
+                      className={`absolute bottom-9 ${index === 0 ? 'left-2' : '-left-3.5'} px-2 py-1 rounded-full`}
                 >
                     <MaskedView 
                         maskElement={
-                            <Text className='font-bold text-white text6xl'>
+                            <Text className='font-bold text-white text-6xl'>
                                 {index + 1}
                             </Text>
                         }>
@@ -32,7 +32,10 @@ const TrendingCard = ({movie:{movie_id, Title , Poster},index }:TrendingCardProp
                     </MaskedView>
                 </View>
 
-                <Text className='text-sm font-bold mt-2 text-light-200' numberOfLines={2}>
+                <Text 
+                      className="text-sm font-bold mt-3 text-white w-32"
+                    numberOfLines={2}
+                >
                     {Title}
                 </Text>
         </TouchableOpacity>
