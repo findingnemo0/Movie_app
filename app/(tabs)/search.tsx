@@ -1,31 +1,33 @@
 import { Image, View, Text, FlatList, ActivityIndicator } from 'react-native';
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { icons, images } from '@/assets';
 import useFetch from "@/services/useFetch";
 import { fetchMovies } from "@/services/api";
 import SearchBar from '@/components/SearchBar';
 import MovieCart from '@/components/MovieCart';
 import { Movie } from '@/interfaces/interfaces';
+import { updateSearchCount } from '@/services/appwrite';
 
 export default function Search() {
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedQuery, setDebouncedQuery] = useState('');
 
-  // ✅ Declare useRef at the top-level of the component
-  const debounceTimeout = useRef<number | null>(null);
+  const debounceTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const { data: movies, loading: moviesLoading, error: moviesError, refetch: loadMovies, reset } =
-    useFetch<Movie[]>(() => fetchMovies({ query: debouncedQuery }), false);
+  const {
+    data: movies,
+    loading: moviesLoading,
+    error: moviesError,
+    refetch: loadMovies,
+    reset,
+  } = useFetch<Movie[]>(() => fetchMovies({ query: debouncedQuery }), false);
 
+  // Handle typing with debounce
   const handleSearchChange = (text: string) => {
     setSearchQuery(text);
 
-    // ✅ Clear previous timeout if exists
-    if (debounceTimeout.current !== null) {
-      clearTimeout(debounceTimeout.current);
-    }
+    if (debounceTimeout.current) clearTimeout(debounceTimeout.current);
 
-    // ✅ Set new timeout
     debounceTimeout.current = setTimeout(() => {
       if (text.trim()) {
         setDebouncedQuery(text);
@@ -33,17 +35,24 @@ export default function Search() {
       } else {
         reset();
       }
-    }, 500) as unknown as number; // RN/TS fix: setTimeout returns NodeJS.Timeout in types, so cast to number
+    }, 500);
   };
+
+  // ✅ Track searches once movies are updated
+  useEffect(() => {
+    if (debouncedQuery && (movies ?? []).length > 0) {
+      updateSearchCount(debouncedQuery, (movies ?? [])[0]);
+    }
+  }, [movies, debouncedQuery]);
 
   return (
     <View className='flex-1 bg-primary'>
       <Image source={images.bg} className='flex-1 absolute w-full z-0' resizeMode='cover' />
-     
+
       <View className='w-full flex-row justify-center mt-20 items-center'>
-          <Image source={icons.logo} className='w-12 h-10' />
+        <Image source={icons.logo} className='w-12 h-10' />
       </View>
-      
+
       <View className='mt-20 px-5'>
         <SearchBar
           placeholder='Search movie'
@@ -52,9 +61,8 @@ export default function Search() {
         />
       </View>
 
-
       <FlatList
-        data={movies || []}
+        data={movies ?? []}
         renderItem={({ item }) => <MovieCart movie={item} />}
         keyExtractor={(item) => item.imdbID}
         className='px-5'
@@ -64,9 +72,13 @@ export default function Search() {
         ListHeaderComponent={() => (
           <>
             {moviesLoading && <ActivityIndicator size="large" color='#0000ff' className='my-3' />}
-            {moviesError && <Text className='text-red-500 px-5 my-3'>Error: {moviesError.message}</Text>}
+            {moviesError && (
+              <Text className='text-red-500 px-5 my-3'>
+                Error: {moviesError.message}
+              </Text>
+            )}
 
-            {!moviesLoading && !moviesError && debouncedQuery && movies?.length! > 0 && (
+            {!moviesLoading && !moviesError && debouncedQuery && (movies ?? []).length > 0 && (
               <Text className='text-xl text-white font-bold gap-2'>
                 Search Results for <Text className='text-accent'>{debouncedQuery}</Text>
               </Text>

@@ -5,9 +5,16 @@ import { useRouter } from "expo-router";
 import { ActivityIndicator, FlatList, Image, ScrollView, Text, View } from "react-native";
 import { icons, images } from "../../assets";
 import MovieCart from "@/components/MovieCart";
+import { getTrendingMovies } from "@/services/appwrite";
 
 export default function Index() {
   const router = useRouter();
+
+  const {
+    data:trendingMovies,
+    loading:trendingLoading,
+    error:trendingError,
+  } = useFetch(getTrendingMovies);
 
   const {
     data:movies , 
@@ -38,25 +45,48 @@ export default function Index() {
           />
            
 
-           {moviesLoading ?(
+           {moviesLoading || trendingLoading ?(
             <ActivityIndicator
              size="large"
              color="#0000ff"
              className="mt-10 self-center"
             />
-           ):moviesError?(
-            <Text>Error:{moviesError?.message}</Text>
+           ):moviesError || trendingError ?(
+            <Text>Error:{moviesError?.message || trendingError?.message}</Text>
            ):(
              <View className="flex-1 mt-5">
              <SearchBar
               onFocus={()=> router.push('/(tabs)/search')}
               placeholder="Search for a movie"
              />
+
+             {trendingMovies &&(
+              <View className="mt10">
+                  <Text className="text-lg text-white font-bold mb-3"> 
+                    Trending Movies
+                  </Text>
+                    <FlatList
+                      horizontal
+                      showsHorizontalScrollIndicator={false}
+                      className="mb-4 mt-3"
+                      data={trendingMovies}
+                      renderItem={({item,index})=>(
+                        <Text 
+                         className="text-white text-sm">
+                          {item.title}
+                        </Text>
+                      )}
+                      keyExtractor={(item)=>item.movie_id}
+                    >
+                    </FlatList>
+              </View>
+             )}
+
              <>
               <Text className="text-lg text-white font-bold mt-5 mb-3">
               Latest Movies
               </Text>
-              
+  
               <FlatList
                 data={movies || []}
                 renderItem={({item})=>(
@@ -71,7 +101,7 @@ export default function Index() {
                       gap:20,
                       paddingRight:5,
                       marginBottom:10
-                }}
+                    }}
                 className="mt-2 pb-32"
                 scrollEnabled={false}
               />
