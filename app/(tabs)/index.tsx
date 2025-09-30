@@ -6,6 +6,7 @@ import { ActivityIndicator, FlatList, Image, ScrollView, Text, View } from "reac
 import { icons, images } from "../../assets";
 import MovieCart from "@/components/MovieCart";
 import { getTrendingMovies } from "@/services/appwrite";
+import TrendingCard from "@/components/TrendingCard";
 
 export default function Index() {
   const router = useRouter();
@@ -65,20 +66,20 @@ export default function Index() {
                   <Text className="text-lg text-white font-bold mb-3"> 
                     Trending Movies
                   </Text>
-                    <FlatList
-                      horizontal
-                      showsHorizontalScrollIndicator={false}
-                      className="mb-4 mt-3"
-                      data={trendingMovies}
-                      renderItem={({item,index})=>(
-                        <Text 
-                         className="text-white text-sm">
-                          {item.title}
-                        </Text>
-                      )}
-                      keyExtractor={(item)=>item.movie_id}
-                    >
-                    </FlatList>
+                   <FlatList
+                    horizontal
+                    showsHorizontalScrollIndicator={false}
+                    ItemSeparatorComponent={()=><View className="w-4"/>}
+                    className="mb-4 mt-3"
+                    data={trendingMovies}
+                    renderItem={({ item , index }) => (
+                      <TrendingCard  
+                        movie={item}
+                        index={index}
+                      />
+                    )}
+                    keyExtractor={(item, index) => item.movie_id ? `${item.movie_id}-${index}` : index.toString()}
+                  />
               </View>
              )}
 
@@ -87,24 +88,21 @@ export default function Index() {
               Latest Movies
               </Text>
   
-              <FlatList
-                data={movies || []}
-                renderItem={({item})=>(
-                  <MovieCart
-                      movie={item}
-                  />
-                )}  
-                keyExtractor={(item) => item.imdbID}
-                numColumns={3}
-                columnWrapperStyle={{
-                      justifyContent:'flex-start',
-                      gap:20,
-                      paddingRight:5,
-                      marginBottom:10
-                    }}
-                className="mt-2 pb-32"
-                scrollEnabled={false}
-              />
+             <FlatList
+               data={movies || []}
+               renderItem={({ item }) => <MovieCart movie={item} />}
+               keyExtractor={(item, index) => item.imdbID ? `${item.imdbID}-${index}` : index.toString()}
+               numColumns={3}
+               columnWrapperStyle={{
+                 justifyContent: 'flex-start',
+                 gap: 20,
+                 paddingRight: 5,
+                 marginBottom: 10,
+               }}
+               className="mt-2 pb-32"
+               scrollEnabled={false}
+             />
+
               </>
           </View>
            )}
